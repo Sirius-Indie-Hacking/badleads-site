@@ -36,6 +36,7 @@ const alts = alternates(path);
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     {PODCAST_ENABLED && feed && <link rel="alternate" type="application/rss+xml" title="Bad Leads podcast" href="/podcast/feed.xml" />}
+    <link rel="expect" href="#main" blocking="render" />
     <link rel="preload" href="/fonts/bebas-neue-latin.woff2" as="font" type="font/woff2" crossorigin />
     <link rel="preload" href="/fonts/figtree-latin.woff2" as="font" type="font/woff2" crossorigin />
     <meta property="og:type" content="website" />
@@ -59,7 +60,7 @@ const alts = alternates(path);
     <a class="skip" href="#main">Skip to content</a>
     <header class:list={["site-header", overlay ? "site-header--overlay" : "site-header--bar"]}>
       <div class="wrap site-header__in">
-        <a class="wordmark" href={home}>Bad <span>Leads</span></a>
+        <a class="wordmark" href={home}>Bad Leads</a>
         <nav class="nav" aria-label={c.nav.menuLabel}>
           <a class="nav__how" href={`${home}#how`}>{c.nav.how}</a>
           <a href={`${home}#cast`}>{c.nav.cast}</a>
@@ -71,7 +72,7 @@ const alts = alternates(path);
     <main id="main"><slot /></main>
     <footer class="site-footer">
       <div class="wrap site-footer__in">
-        <div><span class="footer-stamp">Case no. 001</span><a class="wordmark" href={home}>Bad <span>Leads</span></a></div>
+        <div><span class="footer-stamp">Case no. 001</span><a class="wordmark" href={home}>Bad Leads</a></div>
         <nav aria-label="Footer">
           {PODCAST_ENABLED && <a href={localePath(lang, "/podcast/")}>{c.footer.podcast}</a>}
           <a href={localePath(lang, "/privacy/")}>{c.footer.privacy}</a>

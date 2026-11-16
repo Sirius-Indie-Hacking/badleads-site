@@ -6,5 +6,5 @@ const c = getCopy(lang);
 ---
 {APP_STORE_URL
   ? <a class="btn btn--primary" href={APP_STORE_URL}><Icon name="apple-logo" size={22} />{c.cta.appStore}</a>
-  : <p class="soon">{c.cta.soon}</p>}
+  : <p class="soon"><Icon name="device-mobile" size={20} />{c.cta.soon}</p>}
 {GOOGLE_PLAY_URL && <a class="btn btn--ghost" href={GOOGLE_PLAY_URL}><Icon name="google-play-logo" size={22} />{c.cta.googlePlay}</a>}

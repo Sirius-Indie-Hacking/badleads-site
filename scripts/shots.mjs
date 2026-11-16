@@ -7,7 +7,7 @@ const exe = `${os.homedir()}/.cache/ms-playwright/chromium_headless_shell-1248/c
 const pages = { home: "/", podcast: "/podcast/", privacy: "/privacy/", support: "/support/", "404": "/nothing-here/" };
 const only = process.argv.slice(2);
 const server = await serve(4397);
-fs.mkdirSync("proof", { recursive: true });
+const OUT = process.env.OUT || "proof"; fs.mkdirSync(OUT, { recursive: true });
 const browser = await chromium.launch({ executablePath: exe, headless: true });
 const outside = new Set();
 for (const [w, h, tag] of [[390, 844, "390"], [1440, 900, "1440"]]) {
@@ -20,7 +20,7 @@ for (const [w, h, tag] of [[390, 844, "390"], [1440, 900, "1440"]]) {
     // lazy images: scroll through so they load before the full-page shot
     await page.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 500) { window.scrollTo(0, y); await new Promise((r) => setTimeout(r, 60)); } window.scrollTo(0, 0); });
     await page.waitForTimeout(400);
-    await page.screenshot({ path: `proof/${name}-${tag}.png`, fullPage: true });
+    await page.screenshot({ path: `${OUT}/${name}-${tag}.png`, fullPage: true });
     const over = await page.evaluate(() => document.documentElement.scrollWidth > window.innerWidth);
     console.log(name, tag, over ? "HORIZONTAL OVERFLOW" : "ok");
   }

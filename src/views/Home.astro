@@ -7,10 +7,10 @@ import AppCta from "../components/AppCta.astro";
 import { getCopy, localePath, abs, APP_STORE_URL, SITE_URL, PODCAST_ENABLED } from "../lib/site";
 
 import city1 from "../assets/art/city1.jpg";
-import map from "../assets/art/map.jpg";
-import ladies from "../assets/art/ladies.jpg";
-import officeA from "../assets/art/officeA.jpg";
-import hushNote from "../assets/art/hush-note.jpg";
+import city2 from "../assets/art/city2.jpg";
+import talk from "../assets/shots/talk.jpg";
+import search from "../assets/shots/search.jpg";
+import notebook from "../assets/shots/notebook.jpg";
 import courthouse from "../assets/art/courthouse.jpg";
 import officeB from "../assets/art/officeB.jpg";
 import kip from "../assets/art/kip.png";
@@ -21,7 +21,7 @@ import granny from "../assets/art/granny.png";
 const { lang = "en" } = Astro.props;
 const c = getCopy(lang);
 const h = c.home;
-const stepImgs = [ladies, officeA, hushNote, courthouse];
+const stepImgs = [talk, search, notebook, courthouse];
 const castImgs = [kip, nora, peeps, granny];
 
 const game: Record<string, unknown> = {
@@ -55,44 +55,81 @@ const faq = {
 const site = { "@context": "https://schema.org", "@type": "WebSite", name: "Bad Leads", url: SITE_URL + "/", inLanguage: lang };
 ---
 <Base lang={lang} title={h.title} description={h.description} path="/" ogImage="/og/home.jpg" ogAlt={h.ogAlt} overlay jsonld={[game, faq, site]}>
-  <section class="hero">
+  <section class="hero" aria-labelledby="hero-title">
     <Picture class="hero__img" pictureAttributes={{ class: "hero__pic" }} src={city1} formats={["avif", "webp"]} fallbackFormat="webp" widths={[640, 960, 1280]} sizes="100vw" alt={h.hero.imageAlt} loading="eager" fetchpriority="high" />
     <div class="wrap hero__copy">
-      <p class="eyebrow">A comedy murder mystery</p>
-      <h1 class="neon"><span>Bad</span> <span>Leads</span></h1>
+      <p class="hero__kicker">A comedy murder mystery</p>
+      <h1 id="hero-title"><span>Bad</span> <span>Leads</span></h1>
       <p class="hero__sub">{h.hero.sub}</p>
-      <div class="actions"><AppCta lang={lang} />{PODCAST_ENABLED && <a class="text-link" href={localePath(lang, "/podcast/")}>{c.cta.listen} <span aria-hidden="true">↗</span></a>}</div>
+      <div class="actions">
+        <button class="btn btn--primary play" type="button" data-play><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.5h4v15H6zM14 4.5h4v15h-4z"/></svg><span class="play__label">Hear the opening</span></button>
+        <AppCta lang={lang} />
+        {PODCAST_ENABLED && <a class="btn btn--ghost" href={localePath(lang, "/podcast/")}>{c.cta.listen}</a>}
+      </div>
     </div>
-    <div class="hero__bottom">The Old Quarter <span>Case no. 001</span></div>
+    <p class="hero__place">The Old Quarter, case no. 001</p>
   </section>
-  <section class="opening section"><div class="wrap opening__inner">
-    <div><p class="eyebrow">A message from the detective</p><h2 class="h2">Play the opening</h2><button class="play-opening" type="button" aria-label="Play opening narration" aria-pressed="false"><span aria-hidden="true">▶</span></button><audio id="opening-audio" preload="none" src="/audio/opening.mp3"></audio><p class="opening__hint">Kip Hartley · opening narration</p></div>
+  <section class="section opening" aria-labelledby="opening-h"><div class="wrap opening__inner">
+    <div class="opening__ctl"><h2 id="opening-h">Play the opening</h2><button class="play play-opening" type="button" data-play aria-label="Play opening narration"><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.5h4v15H6zM14 4.5h4v15h-4z"/></svg></button><audio id="opening-audio" preload="none" src="/audio/opening.mp3"></audio></div>
     <figure><blockquote id="opening-subtitle" data-line={h.quote.text}>{h.quote.text}</blockquote><figcaption>{h.quote.by}</figcaption></figure>
   </div></section>
-  <section class="section how" id="how"><div class="wrap"><div class="how__head"><p class="eyebrow">The investigation</p><h2 class="h2">{h.how.h2}</h2><p class="lead">{h.how.lead}</p></div>
-    <div class="board"><svg class="board__yarn" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true"><path d="M120 90 C260 20 290 260 390 150 S600 45 640 170 S800 240 900 100" /></svg>
-      {h.how.steps.map((s, i) => <article class="polaroid"><span class="pin" aria-hidden="true"></span><Picture src={stepImgs[i]} formats={["avif", "webp"]} fallbackFormat="webp" widths={[320, 480, 640]} sizes="(min-width: 900px) 260px, 80vw" alt={s.alt} loading="lazy" /><div class="polaroid__caption"><span>0{i + 1}</span><h3>{s.title}</h3><p>{s.text}</p></div></article>)}
-    </div></div></section>
-  <section class="section cast" id="cast"><div class="wrap"><p class="eyebrow">Persons of interest</p><h2 class="h2">{h.cast.h2}</h2><div class="cast-grid">
-    {h.cast.people.map((p, i) => <article class="person"><div class="person__fig"><Picture src={castImgs[i]} formats={["avif", "webp"]} fallbackFormat="webp" widths={[240, 360, 480]} sizes="(min-width: 900px) 260px, 45vw" alt={p.alt} loading="lazy" /></div><div class="person__txt"><p class="person__role">{p.role}</p><h3>{p.name}</h3><p>{p.text}</p></div></article>)}
-  </div></div></section>
-  {PODCAST_ENABLED && <section class="section podcast-paper" id="podcast"><div class="wrap"><div class="newspaper"><p class="newspaper__masthead">The Old Quarter Courier</p><div class="newspaper__rule">CITY DESK <span>AFTER HOURS</span></div><div class="newspaper__content"><div><p class="eyebrow">On the air</p><h2>{h.podcast.h2}</h2><p>{h.podcast.text}</p><a class="ink-link" href={localePath(lang, "/podcast/")}>{c.cta.listen} →</a></div><Picture src={officeB} formats={["avif", "webp"]} fallbackFormat="webp" widths={[480, 720, 960]} sizes="(min-width: 800px) 40vw, 90vw" alt={h.podcast.imageAlt} loading="lazy" /></div></div></div></section>}
-  <section class="section faq-section" id="faq"><div class="wrap faq"><div><p class="eyebrow">From the files</p><h2 class="h2">{h.faq.h2}</h2></div><div class="faq__list">{h.faq.items.map((item, i) => <article class="faq-card"><button type="button" aria-expanded="false" aria-controls={`answer-${i}`}><span>{item.q}</span><span aria-hidden="true">+</span></button><p id={`answer-${i}`} hidden>{item.a}</p></article>)}</div></div></section>
-  <section class="closing"><Picture pictureAttributes={{ class: "closing__pic" }} src={city1} formats={["avif", "webp"]} fallbackFormat="webp" widths={[640, 960, 1280]} sizes="100vw" alt={h.hero.imageAlt} loading="lazy" /><div class="wrap closing__copy"><p class="eyebrow">The case is waiting</p><h2 class="neon"><span>Bad</span> <span>Leads</span></h2><p>{h.closing.text}</p><div class="actions"><AppCta lang={lang} /></div></div></section>
+  <section class="section how" id="how" aria-labelledby="how-h"><div class="wrap">
+    <div class="sec-head"><h2 id="how-h">{h.how.h2}</h2><p class="lead">{h.how.lead}</p></div>
+    <div class="board" id="board">
+      <svg class="board__yarn" aria-hidden="true" focusable="false"><path id="yarn-path" d="" /><g id="yarn-pins"></g></svg>
+      <ol class="cards">
+        {h.how.steps.map((s, i) => <li class="card"><div class="card__band"><span>0{i + 1}</span><span class="pin" data-pin></span></div><Picture class="card__img" src={stepImgs[i]} formats={["avif", "webp"]} fallbackFormat="webp" widths={[480, 720, 960]} sizes="(min-width: 64rem) 280px, 90vw" alt={s.alt} width={960} height={540} loading="lazy" /><div class="card__txt"><h3>{s.title}</h3><p>{s.text}</p></div></li>)}
+      </ol>
+    </div>
+  </div></section>
+  <section class="section cast" id="cast" aria-labelledby="cast-h"><div class="wrap">
+    <div class="sec-head"><h2 id="cast-h">{h.cast.h2}</h2><Yarn /></div>
+    <ul class="lineup">
+      {h.cast.people.map((p, i) => <li class="person"><div class="person__fig"><Picture src={castImgs[i]} formats={["avif", "webp"]} fallbackFormat="webp" widths={[240, 360, 480]} sizes="(min-width: 56rem) 260px, 112px" alt={p.alt} loading="lazy" /></div><div class="person__txt"><p class="person__role">{p.role}</p><h3>{p.name}</h3><p>{p.text}</p></div></li>)}
+    </ul>
+  </div></section>
+  {PODCAST_ENABLED && <section class="section band" id="podcast"><div class="wrap split"><div><h2>{h.podcast.h2}</h2><p class="lead">{h.podcast.text}</p><div class="actions"><a class="btn btn--ghost" href={localePath(lang, "/podcast/")}>{c.cta.listen}</a></div></div><div class="split__art"><Picture src={officeB} formats={["avif", "webp"]} fallbackFormat="webp" widths={[480, 720, 960]} sizes="(min-width: 56rem) 40vw, 90vw" alt={h.podcast.imageAlt} loading="lazy" /></div></div></section>}
+  <section class="section" id="faq" aria-labelledby="faq-h"><div class="wrap faq"><h2 id="faq-h">{h.faq.h2}</h2><div class="faq__list">{h.faq.items.map((item) => <details><summary>{item.q}</summary><p>{item.a}</p></details>)}</div></div></section>
+  <section class="closing"><Picture class="closing__img" pictureAttributes={{ class: "closing__pic" }} src={city2} formats={["avif", "webp"]} fallbackFormat="webp" widths={[640, 960, 1280]} sizes="100vw" alt={h.closing.imageAlt} loading="lazy" /><div class="wrap closing__copy"><h2>{h.closing.h2}</h2><p>{h.closing.text}</p><div class="actions"><AppCta lang={lang} /></div></div></section>
 </Base>
 <script>
   const audio = document.querySelector<HTMLAudioElement>('#opening-audio');
-  const play = document.querySelector<HTMLButtonElement>('.play-opening');
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-play]');
   const subtitle = document.querySelector<HTMLElement>('#opening-subtitle');
-  if (audio && play && subtitle) {
+  if (audio && buttons.length && subtitle) {
     const line = subtitle.dataset.line || '';
-    play.addEventListener('click', () => { if (audio.paused) { audio.play().catch(() => {}); } else audio.pause(); });
-    audio.addEventListener('play', () => { play.setAttribute('aria-pressed', 'true'); play.setAttribute('aria-label', 'Pause opening narration'); play.firstElementChild!.textContent = 'Ⅱ'; });
-    audio.addEventListener('pause', () => { play.setAttribute('aria-pressed', 'false'); play.setAttribute('aria-label', 'Play opening narration'); play.firstElementChild!.textContent = '▶'; });
+    const set = (playing: boolean) => buttons.forEach(b => {
+      b.dataset.state = playing ? 'playing' : 'paused';
+      const label = b.querySelector('.play__label');
+      if (label) label.textContent = playing ? 'Pause the opening' : 'Hear the opening';
+      else b.setAttribute('aria-label', playing ? 'Pause opening narration' : 'Play opening narration');
+    });
+    buttons.forEach(b => b.addEventListener('click', () => { if (audio.paused) audio.play().catch(() => {}); else audio.pause(); }));
+    audio.addEventListener('play', () => set(true));
+    audio.addEventListener('pause', () => set(false));
     audio.addEventListener('timeupdate', () => { if (Number.isFinite(audio.duration)) subtitle.textContent = line.slice(0, Math.ceil(line.length * Math.min(1, audio.currentTime / audio.duration))); });
-    audio.addEventListener('ended', () => { subtitle.textContent = line; });
+    audio.addEventListener('ended', () => { subtitle.textContent = line; set(false); });
   }
-  document.querySelectorAll<HTMLButtonElement>('.faq-card button').forEach(button => button.addEventListener('click', () => { const open = button.getAttribute('aria-expanded') === 'true'; button.setAttribute('aria-expanded', String(!open)); const answer = document.getElementById(button.getAttribute('aria-controls')!); if (answer) answer.hidden = open; }));
-  const board = document.querySelector('.board');
-  if (board && 'IntersectionObserver' in window) { const observer = new IntersectionObserver(entries => { if (entries[0].isIntersecting) { board.classList.add('is-visible'); observer.disconnect(); } }, { threshold: .15 }); observer.observe(board); }
+
+  // Red yarn: one thread through the pins, in play order. Drawn from the real pin positions so it fits every width.
+  const board = document.querySelector<HTMLElement>('#board');
+  const path = document.querySelector<SVGPathElement>('#yarn-path');
+  const pinsG = document.querySelector<SVGGElement>('#yarn-pins');
+  const svg = path?.ownerSVGElement;
+  const drawYarn = () => {
+    if (!board || !path || !pinsG || !svg) return;
+    const b = board.getBoundingClientRect();
+    const pts = [...board.querySelectorAll<HTMLElement>('[data-pin]')].map(p => { const r = p.getBoundingClientRect(); return [r.left + r.width / 2 - b.left - board.clientLeft, r.top + r.height / 2 - b.top - board.clientTop]; });
+    svg.setAttribute('viewBox', `0 0 ${board.clientWidth} ${board.clientHeight}`);
+    let d = `M${pts[0][0]} ${pts[0][1]}`;
+    for (let i = 1; i < pts.length; i++) {
+      const [ax, ay] = pts[i - 1], [bx, by] = pts[i], dy = by - ay;
+      if (Math.abs(dy) < 24) d += ` Q${(ax + bx) / 2} ${Math.max(ay, by) + 28} ${bx} ${by}`;
+      else if (Math.abs(bx - ax) > 24) d += ` C${ax} ${ay + dy * 0.55} ${bx} ${by - dy * 0.55} ${bx} ${by}`;
+      else { const bow = (i % 2 ? 1 : -1) * 12; d += ` C${ax + bow} ${ay + dy * 0.35} ${bx - bow} ${ay + dy * 0.65} ${bx} ${by}`; }
+    }
+    path.setAttribute('d', d);
+    pinsG.innerHTML = pts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="6"/>`).join('');
+  };
+  if (board) { drawYarn(); new ResizeObserver(drawYarn).observe(board); document.fonts?.ready.then(drawYarn); }
 </script>
