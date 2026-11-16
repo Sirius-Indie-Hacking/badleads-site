@@ -38,17 +38,17 @@ export const en = {
         {
           title: "Talk to everyone",
           text: "Question the suspects. Show them a clue when they lie.",
-          alt: "Three older women playing mahjong at a restaurant table by a rainy window",
+          alt: "A game screen: a young woman holding a pink phone speaks in a dialogue box over a dim apartment",
         },
         {
           title: "Search the rooms",
           text: "Tap anything in a room. Most things are a joke. Some are the clue.",
-          alt: "Kip's office at night, a cluttered desk under a rainy window with neon outside",
+          alt: "A game screen: a room with a chalk body outline on the floor, with tappable objects outlined in amber",
         },
         {
           title: "Pin the clues",
           text: "Link two clues with red yarn on the String Board to unlock a conclusion. The game never does it for you.",
-          alt: "An open pink box holding a handwritten note and envelopes",
+          alt: "A game screen: the case notebook listing eight clues found, with a tab for the string board",
         },
         {
           title: "Accuse in court",
