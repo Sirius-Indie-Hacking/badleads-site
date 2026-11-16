@@ -1,0 +1,9 @@
+node_modules/
+dist/
+.astro/
+
+# internal working notes, not public
+REDESIGN-BRIEF.md
+proof/redesign.log
+proof/redesign.last.txt
+proof/lh/

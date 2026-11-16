@@ -1,0 +1,10 @@
+import { chromium } from "playwright";
+import os from "node:os";
+import { serve } from "./serve.mjs";
+const exe = `${os.homedir()}/.cache/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-linux64/chrome-headless-shell`;
+const server = await serve(4398);
+const b = await chromium.launch({ executablePath: exe });
+const page = await (await b.newContext({ viewport: { width: 390, height: 844 } })).newPage();
+await page.goto("http://127.0.0.1:4398" + (process.argv[2] || "/"), { waitUntil: "networkidle" });
+console.log(await page.evaluate(() => [...document.querySelectorAll("*")].filter((e) => e.getBoundingClientRect().right > innerWidth + 1).slice(0, 8).map((e) => e.tagName + "." + e.className + " " + Math.round(e.getBoundingClientRect().right))));
+await b.close(); server.close();

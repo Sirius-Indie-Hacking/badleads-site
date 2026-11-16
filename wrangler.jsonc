@@ -1,0 +1,17 @@
+{
+  // Static site on Cloudflare (Workers static assets). Astro builds plain files into dist.
+  // Not deployed yet: the domain is not bought. See README.md.
+  "name": "bad-leads-site",
+  "compatibility_date": "2026-10-01",
+  "account_id": "24924f2897419f4d57202bebf7de941f",
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "badleads.xyz", "custom_domain": true },
+    { "pattern": "www.badleads.xyz", "custom_domain": true }
+  ],
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}

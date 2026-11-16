@@ -1,0 +1,13 @@
+---
+import Base from "../layouts/Base.astro";
+import { getCopy, localePath } from "../lib/site";
+const { lang = "en" } = Astro.props;
+const c = getCopy(lang);
+---
+<Base lang={lang} title={c.notFound.title} description={c.notFound.text} path="/404.html" noindex>
+  <div class="wrap lost">
+    <h1>{c.notFound.h1}</h1>
+    <p class="lead">{c.notFound.text}</p>
+    <a class="btn btn--primary" href={localePath(lang, "/")}>{c.notFound.home}</a>
+  </div>
+</Base>

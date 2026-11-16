@@ -1,0 +1,14 @@
+---
+// Phosphor icons (regular weight), inlined from @phosphor-icons/core. One set, one size.
+const icons = import.meta.glob("/node_modules/@phosphor-icons/core/assets/regular/*.svg", {
+  query: "?raw",
+  import: "default",
+  eager: true,
+}) as Record<string, string>;
+interface Props { name: string; size?: number }
+const { name, size = 20 } = Astro.props;
+const raw = icons[`/node_modules/@phosphor-icons/core/assets/regular/${name}.svg`];
+if (!raw) throw new Error(`Unknown icon: ${name}`);
+const svg = raw.replace("<svg ", `<svg aria-hidden="true" focusable="false" width="${size}" height="${size}" `);
+---
+<span class="icon" set:html={svg} />

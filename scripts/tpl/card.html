@@ -1,0 +1,64 @@
+<!doctype html>
+<html><head><meta charset="utf-8">
+<style>
+@font-face{font-family:'Bebas Neue';src:url(../../public/fonts/bebas-neue-latin.woff2) format('woff2')}
+@font-face{font-family:'Figtree';font-weight:400 700;src:url(../../public/fonts/figtree-latin.woff2) format('woff2')}
+*{box-sizing:border-box;margin:0}
+html,body{width:100%;height:100%;background:#07090f;overflow:hidden}
+body{position:relative;font-family:'Figtree',sans-serif;color:#eef1f8}
+.bg{position:absolute;inset:0;background-size:cover;background-position:center}
+.scrim{position:absolute;inset:0}
+.word{position:absolute;font-family:'Bebas Neue',sans-serif;line-height:.86;letter-spacing:.01em}
+.word span{color:#f2a93b}
+.sub{position:absolute;color:#b9c1d6;font-weight:500}
+.fig{position:absolute;background-size:contain;background-repeat:no-repeat;background-position:bottom center}
+svg{position:absolute;inset:0;width:100%;height:100%}
+svg path{fill:none;stroke:#e2442f;stroke-linecap:round}
+
+/* podcast cover, 3000 x 3000 */
+body.cover .bg{background-image:url(../../src/assets/art/city2.jpg);filter:blur(5px) brightness(.55);transform:scale(1.08)}
+body.cover .scrim{background:linear-gradient(90deg,rgba(7,9,15,.85) 0%,rgba(7,9,15,.55) 55%,rgba(7,9,15,.1) 100%)}
+body.cover .fig{background-image:url(../../src/assets/art/nora.png);right:-60px;bottom:0;width:1700px;height:2260px}
+body.cover .word{left:220px;top:300px;font-size:880px}
+body.cover .sub{left:230px;top:2050px;font-size:120px;max-width:1450px;line-height:1.15}
+body.cover svg path{stroke-width:26}
+
+/* OG cards, 1200 x 630 */
+body.og .bg{background-image:url(../../src/assets/art/city1.jpg);background-position:60% 50%}
+body.og .scrim{background:linear-gradient(90deg,rgba(7,9,15,.95) 0%,rgba(7,9,15,.82) 45%,rgba(7,9,15,.1) 80%)}
+body.og .word{left:72px;top:150px;font-size:210px}
+body.og .sub{left:76px;top:360px;font-size:40px;max-width:800px;line-height:1.25}
+body.og svg path{stroke-width:5}
+body.og-page .bg{background-image:url(../../src/assets/art/city2.jpg);background-position:center 40%}
+body.og-podcast .bg{background-image:url(../../src/assets/art/officeB.jpg)}
+body.og-podcast .fig{background-image:url(../../src/assets/art/nora.png);right:60px;bottom:0;width:380px;height:506px}
+
+/* icons */
+body.icon{background:#07090f}
+body.icon .word{inset:0;display:grid;place-items:center;font-size:var(--s);letter-spacing:0;line-height:1;padding-top:.04em}
+</style></head>
+<body>
+<div class="bg"></div><div class="scrim"></div>
+<div class="fig"></div>
+<svg id="yarn" viewBox="0 0 100 100" preserveAspectRatio="none"><path vector-effect="non-scaling-stroke" d=""/></svg>
+<div class="word" id="word"></div>
+<div class="sub" id="sub"></div>
+<script>
+const q = new URLSearchParams(location.search);
+const kind = q.get("kind");
+document.body.className = kind === "cover" ? "cover" : kind === "icon" ? "icon" : "og og-" + kind.replace("og-", "");
+const w = document.getElementById("word"), s = document.getElementById("sub"), p = document.querySelector("#yarn path");
+if (kind === "cover") {
+  w.innerHTML = "Bad<br><span>Leads</span>";
+  s.textContent = "A true crime comedy podcast";
+  p.setAttribute("d", "M0 67 C 12 65.6, 24 68.4, 36 67 S 52 65.6, 64 67");
+} else if (kind === "icon") {
+  w.innerHTML = "B<span>L</span>"; w.style.setProperty("--s", q.get("s") + "px");
+  document.querySelector(".bg").style.display = "none"; document.querySelector(".scrim").style.display = "none"; document.querySelector(".fig").style.display = "none"; document.querySelector("#yarn").style.display = "none";
+} else {
+  w.innerHTML = "Bad <span>Leads</span>";
+  s.textContent = { "og-home": "A comedy murder mystery for your phone", "og-podcast": "The podcast", "og-page": "A comedy murder mystery for iPhone and iPad" }[kind];
+  p.parentNode.style.display = "none";
+}
+</script>
+</body></html>

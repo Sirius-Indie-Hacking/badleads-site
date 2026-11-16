@@ -1,0 +1,18 @@
+---
+import Icon from "./Icon.astro";
+import { getCopy, podcastPlatforms } from "../lib/site";
+const { lang = "en" } = Astro.props;
+const c = getCopy(lang);
+const icons: Record<string, string> = { spotify: "spotify-logo", apple: "apple-podcasts-logo", youtube: "youtube-logo", amazon: "amazon-logo" };
+const links = podcastPlatforms();
+---
+<div class="listen">
+  {links.length > 0
+    ? <>
+        <p class="listen__label">{c.podcast.listenOn}</p>
+        <div class="actions">
+          {links.map((l) => <a class="btn btn--ghost" href={l.url} rel="noopener"><Icon name={icons[l.key] ?? "podcast"} size={22} />{(c.podcast.platforms as Record<string,string>)[l.key] ?? l.key}</a>)}
+        </div>
+      </>
+    : <p class="listen__label">{c.podcast.noLinks}</p>}
+</div>

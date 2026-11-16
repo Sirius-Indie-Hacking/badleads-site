@@ -1,0 +1,91 @@
+---
+import { Picture } from "astro:assets";
+import Base from "../layouts/Base.astro";
+import Icon from "../components/Icon.astro";
+import AppCta from "../components/AppCta.astro";
+import ListenButtons from "../components/ListenButtons.astro";
+import { getCopy, localePath, abs, podcastPlatforms, PODCAST_AUTHOR } from "../lib/site";
+import episodesData from "../data/episodes.json";
+import officeB from "../assets/art/officeB.jpg";
+
+const { lang = "en" } = Astro.props;
+const c = getCopy(lang);
+const p = c.podcast;
+const episodes = [...(episodesData as any[])].sort((a, b) => +new Date(b.pubDate) - +new Date(a.pubDate));
+const fmt = new Intl.DateTimeFormat(lang, { year: "numeric", month: "long", day: "numeric", timeZone: "UTC" });
+
+const series: Record<string, unknown> = {
+  "@context": "https://schema.org",
+  "@type": "PodcastSeries",
+  name: "Bad Leads",
+  description: p.description,
+  url: abs(localePath(lang, "/podcast/")),
+  webFeed: abs("/podcast/feed.xml"),
+  inLanguage: lang,
+  genre: ["True Crime", "Comedy"],
+  image: abs("/podcast/cover.jpg"),
+  author: { "@type": "Organization", name: PODCAST_AUTHOR },
+};
+const sameAs = podcastPlatforms().map((l) => l.url);
+if (sameAs.length) series.sameAs = sameAs;
+if (episodes.length) {
+  series.episode = episodes.map((e) => ({
+    "@type": "PodcastEpisode",
+    name: e.title,
+    description: e.description,
+    datePublished: e.pubDate,
+    url: abs(localePath(lang, "/podcast/")),
+    associatedMedia: { "@type": "AudioObject", contentUrl: e.audioUrl },
+  }));
+}
+---
+<Base lang={lang} title={p.title} description={p.description} path="/podcast/" ogImage="/og/podcast.jpg" ogAlt="Bad Leads, the podcast" current="podcast" jsonld={[series]} feed>
+  <div class="wrap">
+    <section class="pod-hero split">
+      <div class="pod-hero__txt">
+        <h1>{p.h1}</h1>
+        <p class="lead">{p.lead}</p>
+        <ListenButtons lang={lang} />
+      </div>
+      <div class="split__art">
+        <Picture src={officeB} formats={["avif", "webp"]} fallbackFormat="webp" widths={[480, 720, 960]} sizes="(min-width: 800px) 45vw, 100vw" alt={p.imageAlt} loading="eager" fetchpriority="high" />
+      </div>
+    </section>
+  </div>
+
+  <section class="section band episodes">
+    <div class="wrap">
+      <h2 class="h2">{p.episodesH2}</h2>
+      {episodes.length === 0
+        ? <div class="empty">
+            <Icon name="microphone-stage" size={32} />
+            <h3>{p.empty.title}</h3>
+            <p>{p.empty.text}</p>
+            <div class="actions"><AppCta lang={lang} /></div>
+          </div>
+        : <>
+            <ol class="episodes__list">
+              {episodes.map((e) => (
+                <li class="episode">
+                  <h3>{e.title}</h3>
+                  <p class="episode__meta">{fmt.format(new Date(e.pubDate))}{e.durationSeconds ? `, ${Math.round(e.durationSeconds / 60)} ${p.duration}` : ""}</p>
+                  <p>{e.description}</p>
+                  <audio controls preload="none" src={e.audioUrl}></audio>
+                </li>
+              ))}
+            </ol>
+            <a class="rss-link" href="/podcast/feed.xml"><Icon name="rss" size={20} />{p.rss}</a>
+          </>}
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <h2 class="h2">{p.aboutH2}</h2>
+      <div class="about">
+        {p.about.map((t) => <p>{t}</p>)}
+      </div>
+      <div class="actions" style="margin-top:32px"><a class="btn btn--ghost" href={localePath(lang, "/")}>{p.playGame}</a></div>
+    </div>
+  </section>
+</Base>

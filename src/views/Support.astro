@@ -1,0 +1,28 @@
+---
+import Base from "../layouts/Base.astro";
+import { getCopy, localePath, CONTACT_EMAIL } from "../lib/site";
+const { lang = "en" } = Astro.props;
+const c = getCopy(lang);
+---
+<Base lang={lang} title={c.support.title} description={c.support.description} path="/support/" ogImage="/og/page.jpg" ogAlt="Bad Leads">
+  <div class="wrap">
+    <article class="doc">
+      <h1>Support</h1>
+      <p class="lede">Bad Leads is a detective game about Kip, a broke private eye who takes the one case nobody else wants. Talk to the people in the building, collect clues and work out who did it.</p>
+      <h2>Contact us</h2>
+      <p>Something broken, unclear or missing? Write to <a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>. Tell us which phone you use and what happened, and we will reply as soon as we can.</p>
+      <h2>Start the episode over</h2>
+      <ol>
+        <li>Tap the sliders button in the top right corner of the game.</li>
+        <li>Tap "Restart episode".</li>
+        <li>Confirm. Your progress, clues and coins are erased and the game goes back to the title screen.</li>
+      </ol>
+      <h2>No sound?</h2>
+      <p>Tap the speaker button in the top right corner so it turns amber. Also check that your phone is not on silent and that the volume is up.</p>
+      <h2>Playing sideways</h2>
+      <p>Bad Leads is played with the phone held sideways. If you see a message asking you to turn your phone, rotate it and unlock the rotation in your phone settings if needed.</p>
+      <h2>Privacy</h2>
+      <p>Read how the game handles data in our <a href={localePath(lang, "/privacy/")}>privacy policy</a>.</p>
+    </article>
+  </div>
+</Base>

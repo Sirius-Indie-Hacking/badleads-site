@@ -1,0 +1,9 @@
+---
+import Podcast from "../../views/Podcast.astro";
+import { PODCAST_ENABLED } from "../../lib/site";
+// Only builds /podcast/ when PODCAST_ENABLED is true in site.config.mjs.
+export function getStaticPaths() {
+  return PODCAST_ENABLED ? [{ params: { page: undefined } }] : [];
+}
+---
+<Podcast lang="en" />
