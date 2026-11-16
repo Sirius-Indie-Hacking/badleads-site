@@ -116,7 +116,7 @@ export const en = {
         },
         {
           q: "Which languages does it have?",
-          a: "English.",
+          a: "English, Spanish, French, German, Dutch, Korean, Japanese and Turkish. The voices are in English; all text and subtitles switch in Language, in the sound menu at the top right.",
         },
         {
           q: "What age is it for?",
