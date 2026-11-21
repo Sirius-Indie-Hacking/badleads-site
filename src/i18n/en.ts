@@ -13,7 +13,6 @@ export const en = {
   },
   cta: {
     appStore: "Download on the App Store",
-    googlePlay: "Get it on Google Play",
     soon: "For iPhone and iPad",
     listen: "Listen to the podcast",
   },
@@ -33,7 +32,7 @@ export const en = {
     },
     how: {
       h2: "How a case plays",
-      lead: "Every episode opens with a murder. You solve it with four tools.",
+      lead: "The case opens with a murder. You solve it with four tools.",
       steps: [
         {
           title: "Talk to everyone",
@@ -43,7 +42,7 @@ export const en = {
         {
           title: "Search the rooms",
           text: "Tap anything in a room. Most things are a joke. Some are the clue.",
-          alt: "A game screen: a room with a chalk body outline on the floor, with tappable objects outlined in amber",
+          alt: "A game screen: a bedroom with a wall safe, a nightstand and a wardrobe, with tappable objects outlined in amber",
         },
         {
           title: "Pin the clues",
@@ -96,7 +95,7 @@ export const en = {
       items: [
         {
           q: "What is Bad Leads?",
-          a: "A comedy murder mystery game for iPhone and iPad. Each episode opens with a murder. You search places, question suspects, link clues on a string board and accuse the culprit in court.",
+          a: "A comedy murder mystery game for iPhone and iPad. The case opens with a murder. You search places, question suspects, link clues on a string board and accuse the culprit in court.",
         },
         {
           q: "Is Bad Leads free?",
@@ -104,7 +103,7 @@ export const en = {
         },
         {
           q: "Which devices does it run on?",
-          a: "iPhone and iPad. Hold the device sideways to play. There is no Android release date yet.",
+          a: "iPhone and iPad. Hold the device sideways to play.",
         },
         {
           q: "Can I play offline?",
@@ -112,7 +111,7 @@ export const en = {
         },
         {
           q: "How long does a case take?",
-          a: "An episode takes about 30 to 45 minutes.",
+          a: "The case takes about 30 to 45 minutes.",
         },
         {
           q: "Which languages does it have?",
@@ -165,7 +164,7 @@ export const en = {
     duration: "min",
   },
   privacy: { title: "Bad Leads Privacy Policy", description: "How the game Bad Leads handles your data: no account, progress saved on your device, and Google AdMob ads." },
-  support: { title: "Bad Leads Support", description: "Help with the game Bad Leads: what it is, how to restart an episode, and how to contact us." },
+  support: { title: "Bad Leads Support", description: "Help with the game Bad Leads: what it is, how to restart the case, and how to contact us." },
   notFound: {
     title: "Page not found | Bad Leads",
     h1: "Nothing here",
@@ -177,7 +176,8 @@ export const en = {
     support: "Support",
     podcast: "Podcast",
     contact: "Contact",
-    rights: "Bad Leads. All rights reserved.",
+    rights: "© 2026 Murat Can Yüksel. All rights reserved.",
+    appleCredit: "Apple, the Apple logo, iPhone, iPad and App Store are trademarks of Apple Inc., registered in the U.S. and other countries.",
   },
 };
 

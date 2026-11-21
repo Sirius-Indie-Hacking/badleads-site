@@ -18,7 +18,7 @@ export const PODCAST_LINKS = {
   amazon: "",
 };
 
-// Placeholder address: create it (Cloudflare Email Routing is free) or change it here.
+// Live: Cloudflare Email Routing forwards contact@badleads.xyz to the owner's verified Gmail (checked 2026-11-18).
 export const CONTACT_EMAIL = "contact@badleads.xyz";
 
 export const PODCAST_AUTHOR = "Bad Leads";

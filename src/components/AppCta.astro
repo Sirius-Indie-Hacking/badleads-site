@@ -1,10 +1,15 @@
 ---
 import Icon from "./Icon.astro";
-import { getCopy, APP_STORE_URL, GOOGLE_PLAY_URL } from "../lib/site";
+import { getCopy, APP_STORE_URL } from "../lib/site";
 const { lang = "en" } = Astro.props;
 const c = getCopy(lang);
+// Apple's official badge, unmodified (App Store marketing guidelines: official artwork only, at least 40 px high,
+// clear space of one quarter of the badge height). No other store is linked (App Review Guideline 2.3.10).
 ---
 {APP_STORE_URL
-  ? <a class="btn btn--primary" href={APP_STORE_URL}><Icon name="apple-logo" size={22} />{c.cta.appStore}</a>
+  ? <a class="store-badge" href={APP_STORE_URL}><img src="/badges/download-on-the-app-store-black-en-us.svg" alt="Download on the App Store" width="162" height="54" /></a>
   : <p class="soon"><Icon name="device-mobile" size={20} />{c.cta.soon}</p>}
-{GOOGLE_PLAY_URL && <a class="btn btn--ghost" href={GOOGLE_PLAY_URL}><Icon name="google-play-logo" size={22} />{c.cta.googlePlay}</a>}
+<style>
+  .store-badge { display: inline-block; padding: 14px; line-height: 0; }
+  .store-badge img { height: 54px; width: auto; display: block; }
+</style>
