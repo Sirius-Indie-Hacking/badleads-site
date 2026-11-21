@@ -5,10 +5,12 @@ export const en = {
   langName: "English",
   siteName: "Bad Leads",
   nav: {
-    how: "How it plays",
-    cast: "Cast",
+    theory: "Kip's theory",
+    search: "Search",
+    talk: "Talk",
+    office: "Office",
+    court: "Court",
     podcast: "Podcast",
-    faq: "FAQ",
     menuLabel: "Main",
   },
   cta: {

@@ -1,28 +1,22 @@
 ---
 import { Picture } from "astro:assets";
 import Base from "../layouts/Base.astro";
-import Icon from "../components/Icon.astro";
-import Yarn from "../components/Yarn.astro";
 import AppCta from "../components/AppCta.astro";
 import { getCopy, localePath, abs, APP_STORE_URL, SITE_URL, PODCAST_ENABLED } from "../lib/site";
 
 import city1 from "../assets/art/city1.jpg";
-import city2 from "../assets/art/city2.jpg";
-import talk from "../assets/shots/talk.jpg";
-import search from "../assets/shots/search.jpg";
-import notebook from "../assets/shots/notebook.jpg";
-import courthouse from "../assets/art/courthouse.jpg";
+import officeA from "../assets/art/officeA.jpg";
 import officeB from "../assets/art/officeB.jpg";
+import courthouse from "../assets/art/courthouse.jpg";
 import kip from "../assets/art/kip.png";
 import nora from "../assets/art/nora.png";
 import peeps from "../assets/art/peeps.png";
 import granny from "../assets/art/granny.png";
+import talkShot from "../assets/shots/talk.jpg";
 
 const { lang = "en" } = Astro.props;
 const c = getCopy(lang);
 const h = c.home;
-const stepImgs = [talk, search, notebook, courthouse];
-const castImgs = [kip, nora, peeps, granny];
 
 const game: Record<string, unknown> = {
   "@context": "https://schema.org",
@@ -53,83 +47,372 @@ const faq = {
   })),
 };
 const site = { "@context": "https://schema.org", "@type": "WebSite", name: "Bad Leads", url: SITE_URL + "/", inLanguage: lang };
+
+// Every quoted line below is a real line from the game (research/ep1-next/play.html). See proof/v3/lines.md.
+const who: Record<string, string> = { kip: "Kip", nora: "Nora", peeps: "PEEPS", granny: "Granny", narr: "" };
+
+// Tap spots on the office picture, rectangles in the game's own 1280 x 720 coordinates.
+const spots = [
+  { id: "cork", name: "Corkboard", r: [78, 58, 228, 234], lines: [["narr", "A dozen photos, joined by red string that goes nowhere."], ["nora", "He cut them out of magazines. He just likes the string."], ["kip", "It helps me think."]] },
+  { id: "cat", name: "Inspector Whiskers", r: [4, 244, 146, 122], lines: [["kip", "Whiskers. You were here all night. Talk."], ["nora", "He's a cat, Kip."], ["kip", "A witness with fur."], ["narr", "Whiskers closes the other eye. He is not talking."]] },
+  { id: "license", name: "Framed license", r: [335, 103, 76, 166], lines: [["narr", "PRIVATE INVESTIGATOR, KIP HARTLEY. Under it, smaller: \"probationary\"."], ["kip", "That's a formality."], ["nora", "It's in bold."]] },
+  { id: "chair", name: "Kip's chair", r: [655, 288, 318, 170], lines: [["narr", "Squeaks loudly."], ["nora", "Oil it or I sell it."]] },
+  { id: "phone", name: "Phone", r: [984, 438, 138, 80], lines: [["narr", "Blinking: 6 missed calls, all \"GRANNY FONG\"."], ["kip", "She's persistent. Like a tax."]] },
+];
+const pct = (n: number, d: number) => `${((n / d) * 100).toFixed(2)}%`;
+
+// The talk demo: the rent scene, the first minute of the game.
+const talk = [
+  { name: "Granny Fong", text: "Good morning, Detective Kip. Dumplings. Fresh. You look thin." },
+  { name: "Kip", text: "Granny! Is it the first already? Time flies when you're... solving." },
+  { name: "Granny Fong", text: "Three months, Kip." },
+  { name: "Kip", text: "Two and a half. I paid in fortune cookies once." },
+  { name: "Granny Fong", text: "THREE. MONTHS." },
+  { name: "PEEPS", text: "granny scary. scary is love?" },
+];
+
+const people = [
+  { id: "granny", name: "Granny Fong", role: "Landlady", text: "Feeds everyone dumplings. Sweet until rent day.", scan: "granny fong · scary is love?", img: granny, alt: "Granny Fong, an older woman in a red apron holding a bamboo steamer and a ring of keys" },
+  { id: "kip", name: "Kip Hartley", role: "Private detective", text: "Sure he has it figured out. He has not. Also behind on rent.", scan: "kip hartley · 3% right · still sure", img: kip, alt: "Kip Hartley, a silver-haired detective in a dark coat and red tie, grinning" },
+  { id: "nora", name: "Nora Quill", role: "Assistant and podcast host", text: "Hosts a true-crime podcast with 47 episodes and 9 listeners. Secretly loyal.", scan: "nora quill · loyal · do not tell kip", img: nora, alt: "Nora Quill, a young woman with black hair and teal streaks, headphones around her neck" },
+  { id: "peeps", name: "PEEPS", role: "Ball robot", text: "Talks in baby words, looks half asleep, and always finds the real clue.", scan: "peeps · self scan · round · friend", img: peeps, alt: "PEEPS, a white ball-shaped robot with an orange stripe and one brown camera eye" },
+];
+const languages = ["English", "Spanish", "French", "German", "Dutch", "Korean", "Japanese", "Turkish"];
 ---
 <Base lang={lang} title={h.title} description={h.description} path="/" ogImage="/og/home.jpg" ogAlt={h.ogAlt} overlay jsonld={[game, faq, site]}>
-  <section class="hero" aria-labelledby="hero-title">
-    <Picture class="hero__img" pictureAttributes={{ class: "hero__pic" }} src={city1} formats={["avif", "webp"]} fallbackFormat="webp" widths={[640, 960, 1280]} sizes="100vw" alt={h.hero.imageAlt} loading="eager" fetchpriority="high" />
+  <script is:inline>document.documentElement.classList.add("js")</script>
+
+  <!-- 1. Hero: the alley, the wordmark, Kip's voiced opening -->
+  <section class="hero" id="hero" aria-labelledby="hero-title">
+    <div class="hero__stage">
+      <Picture src={city1} formats={["avif", "webp"]} fallbackFormat="webp" widths={[640, 960, 1280]} sizes="(min-width: 48rem) 100vw, 1500px" alt={h.hero.imageAlt} loading="eager" fetchpriority="high" />
+      <span class="hero__sign" aria-hidden="true"></span>
+    </div>
     <div class="wrap hero__copy">
-      <p class="hero__kicker">A comedy murder mystery</p>
       <h1 id="hero-title"><span>Bad</span> <span>Leads</span></h1>
-      <p class="hero__sub">{h.hero.sub}</p>
+      <p class="hero__sub">A comedy murder mystery for iPhone and iPad. Kip is sure. Kip is wrong. <em>You solve it.</em></p>
       <div class="actions">
-        <button class="btn btn--primary play" type="button" data-play><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.5h4v15H6zM14 4.5h4v15h-4z"/></svg><span class="play__label">Hear the opening</span></button>
+        <button class="play" type="button" id="play" data-state="paused" aria-pressed="false">
+          <span class="play__disc"><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.5h4v15H6zM14 4.5h4v15h-4z"/></svg></span>
+          <span><span id="play-label">Play Kip's opening</span><small>7 seconds, with sound</small></span>
+        </button>
         <AppCta lang={lang} />
         {PODCAST_ENABLED && <a class="btn btn--ghost" href={localePath(lang, "/podcast/")}>{c.cta.listen}</a>}
       </div>
     </div>
-    <p class="hero__place">The Old Quarter, case no. 001</p>
+    <div class="subs" aria-live="off"><p id="subs"></p></div>
+    <audio id="opening-audio" preload="none" src="/audio/opening.mp3"></audio>
   </section>
-  <section class="section opening" aria-labelledby="opening-h"><div class="wrap opening__inner">
-    <div class="opening__ctl"><h2 id="opening-h">Play the opening</h2><button class="play play-opening" type="button" data-play aria-label="Play opening narration"><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12-7.5z"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4.5h4v15H6zM14 4.5h4v15h-4z"/></svg></button><audio id="opening-audio" preload="none" src="/audio/opening.mp3"></audio></div>
-    <figure><blockquote id="opening-subtitle" data-line={h.quote.text}>{h.quote.text}</blockquote><figcaption>{h.quote.by}</figcaption></figure>
-  </div></section>
-  <section class="section how" id="how" aria-labelledby="how-h"><div class="wrap">
-    <div class="sec-head"><h2 id="how-h">{h.how.h2}</h2><p class="lead">{h.how.lead}</p></div>
-    <div class="board" id="board">
-      <svg class="board__yarn" aria-hidden="true" focusable="false"><path id="yarn-path" d="" /><g id="yarn-pins"></g></svg>
-      <ol class="cards">
-        {h.how.steps.map((s, i) => <li class="card"><div class="card__band"><span>0{i + 1}</span><span class="pin" data-pin></span></div><Picture class="card__img" src={stepImgs[i]} formats={["avif", "webp"]} fallbackFormat="webp" widths={[480, 720, 960]} sizes="(min-width: 64rem) 280px, 90vw" alt={s.alt} width={960} height={540} loading="lazy" /><div class="card__txt"><h3>{s.title}</h3><p>{s.text}</p></div></li>)}
-      </ol>
+
+  <!-- 2. Kip's theory: a confident line, scanned, stamped -->
+  <section class="theory" id="theory" aria-labelledby="theory-h">
+    <div class="wrap theory__in">
+      <div>
+        <h2 class="sr" id="theory-h">Kip's theory</h2>
+        <p class="theory__label" aria-hidden="true">Kip's theory</p>
+        <blockquote class="theory__quote scan" data-scan="theory-readout" data-stamp>
+          <q>Easy. Rain came in, Crowle shut the window, slipped, trophy. Accident.</q>
+          <span class="stamp" aria-hidden="true">Bad lead</span>
+        </blockquote>
+        <div class="theory__answer">
+          <p class="readout" id="theory-readout" data-text="PEEPS SCAN · kip is 3% right · we win?">PEEPS SCAN · kip is 3% right · we win?</p>
+          <p class="theory__nora"><b>Nora:</b> You're agreeing with the police. Out loud.</p>
+        </div>
+      </div>
+      <p class="theory__what">Kip has a theory for every case, and it is always confident. What you do is search the rooms, question the suspects, link the clues on a string board and prove him wrong. <strong>PEEPS, his robot, finds the real clue.</strong></p>
+      <div class="theory__fig"><Picture src={kip} formats={["avif", "webp"]} fallbackFormat="png" widths={[360, 520, 600]} sizes="(min-width: 56rem) 26rem, 15rem" alt="Kip Hartley, a silver-haired detective in a dark coat and red tie, grinning" loading="lazy" /></div>
     </div>
-  </div></section>
-  <section class="section cast" id="cast" aria-labelledby="cast-h"><div class="wrap">
-    <div class="sec-head"><h2 id="cast-h">{h.cast.h2}</h2><Yarn /></div>
-    <ul class="lineup">
-      {h.cast.people.map((p, i) => <li class="person"><div class="person__fig"><Picture src={castImgs[i]} formats={["avif", "webp"]} fallbackFormat="webp" widths={[240, 360, 480]} sizes="(min-width: 56rem) 260px, 112px" alt={p.alt} loading="lazy" /></div><div class="person__txt"><p class="person__role">{p.role}</p><h3>{p.name}</h3><p>{p.text}</p></div></li>)}
-    </ul>
-  </div></section>
-  {PODCAST_ENABLED && <section class="section band" id="podcast"><div class="wrap split"><div><h2>{h.podcast.h2}</h2><p class="lead">{h.podcast.text}</p><div class="actions"><a class="btn btn--ghost" href={localePath(lang, "/podcast/")}>{c.cta.listen}</a></div></div><div class="split__art"><Picture src={officeB} formats={["avif", "webp"]} fallbackFormat="webp" widths={[480, 720, 960]} sizes="(min-width: 56rem) 40vw, 90vw" alt={h.podcast.imageAlt} loading="lazy" /></div></div></section>}
-  <section class="section" id="faq" aria-labelledby="faq-h"><div class="wrap faq"><h2 id="faq-h">{h.faq.h2}</h2><div class="faq__list">{h.faq.items.map((item) => <details><summary>{item.q}</summary><p>{item.a}</p></details>)}</div></div></section>
-  <section class="closing"><Picture class="closing__img" pictureAttributes={{ class: "closing__pic" }} src={city2} formats={["avif", "webp"]} fallbackFormat="webp" widths={[640, 960, 1280]} sizes="100vw" alt={h.closing.imageAlt} loading="lazy" /><div class="wrap closing__copy"><h2>{h.closing.h2}</h2><p>{h.closing.text}</p><div class="actions"><AppCta lang={lang} /></div></div></section>
+  </section>
+
+  <!-- 3. Search everything -->
+  <section class="search" id="search" aria-labelledby="search-h">
+    <div class="wrap">
+      <div class="search__top">
+        <div class="sec-head">
+          <blockquote class="kip-line scan scan-clip" data-scan="search-readout">
+            <q>A man's bedroom tells you who he really was.</q>
+            <cite>Kip Hartley</cite>
+          </blockquote>
+          <p class="readout" id="search-readout" data-text="PEEPS SCAN · this is an office · tap it anyway">PEEPS SCAN · this is an office · tap it anyway</p>
+          <h2 id="search-h">Search everything</h2>
+        </div>
+        <div class="search__side">
+          <p>Tap anything in a room. Most things are a joke. Some are the clue. Here is Kip's desk, with five things to try.</p>
+        </div>
+      </div>
+      <div class="room" id="room">
+        <Picture src={officeA} formats={["avif", "webp"]} fallbackFormat="webp" widths={[640, 960, 1280]} sizes="(min-width: 75rem) 1200px, 100vw" alt="Kip's office at night: a corkboard, a desk lamp, a leather chair by a rainy window, a phone, and a cat asleep on a filing cabinet" loading="lazy" />
+        {spots.map((s) => <button class="spot" type="button" data-spot={s.id} aria-pressed="false" aria-label={`Search: ${s.name}`} style={`left:${pct(s.r[0], 1280)};top:${pct(s.r[1], 720)};width:${pct(s.r[2], 1280)};height:${pct(s.r[3], 720)}`}></button>)}
+      </div>
+      <div class="found">
+        <div class="counter">
+          <p class="counter__n" id="counter"><b id="counter-n">0</b> of 5<span>searched</span></p>
+          <div class="ticks" aria-hidden="true">{spots.map(() => <i></i>)}</div>
+        </div>
+        <div class="cap" id="cap" role="status" aria-live="polite">
+          <div class="cap--idle on" data-cap="idle"><p>Tap one of the five rings on the picture. Each one is a real line from the game.</p></div>
+          {spots.map((s) => (
+            <div data-cap={s.id}>
+              <p class="cap__name">{s.name}</p>
+              <div class="cap__lines">{s.lines.map(([w, t]) => <p class={w}>{who[w] && <b>{who[w]}</b>}{t}</p>)}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. Catch the lie: a visual novel, one line per tap -->
+  <section class="talk" id="talk" aria-labelledby="talk-h">
+    <div class="wrap">
+      <div class="talk__top">
+        <div class="sec-head">
+          <blockquote class="kip-line scan scan-clip" data-scan="talk-readout">
+            <q>Look me in the eye and tell me you believe that.</q>
+            <cite>Kip Hartley</cite>
+          </blockquote>
+          <p class="readout" id="talk-readout" data-text="PEEPS SCAN · kip look at eyes · peeps look at dumplings">PEEPS SCAN · kip look at eyes · peeps look at dumplings</p>
+          <h2 id="talk-h">Catch the lie</h2>
+        </div>
+        <div class="search__side"><p>Every suspect talks, one line per tap. Sooner or later one of them lies. This is the first minute of the game, on rent day, with Granny Fong at the door.</p></div>
+      </div>
+      <div class="vn" id="vn">
+        <div class="vn__bg" aria-hidden="true"><Picture src={officeA} formats={["avif", "webp"]} fallbackFormat="webp" widths={[640, 960, 1280]} sizes="(min-width: 75rem) 1200px, 100vw" alt="" loading="lazy" /></div>
+        <div class="vn__dim" aria-hidden="true"></div>
+        <ol class="vn__script">{talk.map((l) => <li><b>{l.name}</b>{l.text}</li>)}</ol>
+        <Picture class="vn__fig vn__fig--kip" src={kip} formats={["avif", "webp"]} fallbackFormat="png" widths={[360, 600]} sizes="30rem" alt="" loading="lazy" data-fig="kip" />
+        <Picture class="vn__fig vn__fig--other" src={granny} formats={["avif", "webp"]} fallbackFormat="png" widths={[360, 600]} sizes="30rem" alt="" loading="lazy" data-fig="granny" />
+        <Picture class="vn__fig vn__fig--other vn__fig--peeps" src={peeps} formats={["avif", "webp"]} fallbackFormat="png" widths={[250, 500]} sizes="16rem" alt="" loading="lazy" data-fig="peeps" hidden />
+        <div class="vn__box" id="vn-box">
+          <span class="vn__name" id="vn-name"></span>
+          <p class="vn__line" id="vn-line"></p>
+          <div class="vn__foot"><span class="vn__step" id="vn-step"></span><button class="vn__next" type="button" id="vn-next"><span id="vn-next-l">Next</span><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 3h10L6 10z"/></svg></button></div>
+        </div>
+        <div class="vn__end" id="vn-end">
+          <div class="vn__shot"><Picture src={talkShot} formats={["avif", "webp"]} fallbackFormat="webp" widths={[640, 960, 1280]} sizes="(min-width: 56rem) 640px, 100vw" alt="A game screen: a young woman holding a pink phone speaks in a dialogue box over a dim apartment, with Skip, Auto and speed buttons above" loading="lazy" /></div>
+          <div class="vn__endtxt">
+            <p class="readout on">PEEPS SCAN · somebody lies · show clue · lie breaks</p>
+            <p><strong>Show a clue mid-talk to crack a lie.</strong> That is a button in the real game. Pick a clue you found in the rooms, and a suspect who swore something has to take it back.</p>
+            <button class="vn__next" type="button" id="vn-replay"><span>Hear it again</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 5. The office: PEEPS scans whoever you tap -->
+  <section class="office" id="office" aria-labelledby="office-h">
+    <div class="wrap office__top">
+      <div class="sec-head">
+        <blockquote class="kip-line scan scan-clip" data-scan="office-readout">
+          <q>You can't fire me. I'm the boss.</q>
+          <cite>Kip Hartley</cite>
+        </blockquote>
+        <p class="readout" id="office-readout" data-text="PEEPS SCAN · four in the room · one is the boss">PEEPS SCAN · four in the room · one is the boss</p>
+        <h2 id="office-h">The office</h2>
+      </div>
+      <div class="search__side">
+        <p>Four people live in this room, and one of them is a robot. Tap one and PEEPS scans them.</p>
+        <p class="pan-hint" aria-hidden="true">Swipe the room sideways, then tap a person.</p>
+      </div>
+    </div>
+    <div class="pan" id="pan" role="group" aria-label="The office, a wide room">
+      <div class="stage">
+        <div class="stage__bg" aria-hidden="true"><Picture src={officeB} formats={["avif", "webp"]} fallbackFormat="webp" widths={[960, 1280]} sizes="(min-width: 56rem) 100vw, 230vw" alt="" loading="lazy" /></div>
+        {people.map((p) => (
+          <button class={`who who--${p.id}`} type="button" data-who={p.id} aria-pressed="false" aria-label={`Scan ${p.name}, ${p.role}`}>
+            <Picture src={p.img} formats={["avif", "webp"]} fallbackFormat="png" widths={[360, 600]} sizes="(min-width: 56rem) 22rem, 17rem" alt="" loading="lazy" />
+            <span class="scan-fig" aria-hidden="true"></span>
+            <span class="who__tag" aria-hidden="true">{p.name}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+    <div class="card" id="card" role="status" aria-live="polite">
+      <div class="wrap card__in">
+        <div data-card="idle" class="on"><p class="card__idle">Nobody is scanned yet. Tap Granny, Kip, Nora or PEEPS.</p></div>
+        {people.map((p) => (
+          <div data-card={p.id}>
+            <p class="readout" data-text={`PEEPS SCAN · ${p.scan}`}>PEEPS SCAN · {p.scan}</p>
+            <h3>{p.name}</h3>
+            <p class="card__role">{p.role}</p>
+            <p class="card__say">{p.text}</p>
+          </div>
+        ))}
+        <p class="card__cat">Inspector Whiskers, the office cat, is asleep on the filing cabinet in the other room. He never finds clues.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. Case closed? -->
+  <section class="court scan" id="court" aria-labelledby="court-h" data-scan="court-readout">
+    <div class="court__bg" aria-hidden="true"><Picture src={courthouse} formats={["avif", "webp"]} fallbackFormat="webp" widths={[640, 960, 1280]} sizes="100vw" alt="" loading="lazy" /></div>
+    <div class="wrap court__in">
+      <div class="court__head">
+        <p class="kip-line">Nobody here is innocent.<cite>Kip Hartley, opening narration</cite></p>
+        <h2 id="court-h">Case closed?</h2>
+      </div>
+      <div class="gavel">
+        <p><b>Judge Snorr</b><span class="judge">OVERRULED.</span></p>
+        <p><b>Bailiff</b>Nobody said anything, Your Honor.</p>
+        <p><b>Judge Snorr</b>...Sustained, then.</p>
+        <cite>Court, first minute. The judge is dozy.</cite>
+      </div>
+      <div class="end">
+        <p>Every case ends with an accusation. Sometimes it is a trial, where you press the statements, present the evidence and name the culprit. Three wrong answers lose the trial. Sometimes it is a room full of suspects, and you explain it step by step.</p>
+        <div class="stars">
+          <div class="stars__row" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="m12 2.8 2.7 5.8 6.3.7-4.7 4.3 1.3 6.3L12 16.7 6.4 19.9l1.3-6.3L3 9.3l6.3-.7z"/></svg>
+            <svg viewBox="0 0 24 24"><path d="m12 2.8 2.7 5.8 6.3.7-4.7 4.3 1.3 6.3L12 16.7 6.4 19.9l1.3-6.3L3 9.3l6.3-.7z"/></svg>
+            <svg class="dim" viewBox="0 0 24 24"><path d="m12 2.8 2.7 5.8 6.3.7-4.7 4.3 1.3 6.3L12 16.7 6.4 19.9l1.3-6.3L3 9.3l6.3-.7z"/></svg>
+          </div>
+          <span>Then you get 1 to 3 stars and a funny rank title.</span>
+        </div>
+        <div class="langs">
+          <h3>Eight languages</h3>
+          <ul>{languages.map((l) => <li>{l}</li>)}</ul>
+        </div>
+      </div>
+      <div class="court__cta">
+        <p class="readout" id="court-readout" data-text="PEEPS SCAN · court is big room · everybody wear serious · serious is silly?">PEEPS SCAN · court is big room · everybody wear serious · serious is silly?</p>
+        <div class="actions"><AppCta lang={lang} /></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="faq" id="faq" aria-labelledby="faq-h"><div class="wrap faq__in"><h2 id="faq-h">{h.faq.h2}</h2><div>{h.faq.items.map((item) => <details><summary>{item.q}</summary><p>{item.a}</p></details>)}</div></div></section>
 </Base>
 <script>
-  const audio = document.querySelector<HTMLAudioElement>('#opening-audio');
-  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-play]');
-  const subtitle = document.querySelector<HTMLElement>('#opening-subtitle');
-  if (audio && buttons.length && subtitle) {
-    const line = subtitle.dataset.line || '';
-    const set = (playing: boolean) => buttons.forEach(b => {
-      b.dataset.state = playing ? 'playing' : 'paused';
-      const label = b.querySelector('.play__label');
-      if (label) label.textContent = playing ? 'Pause the opening' : 'Hear the opening';
-      else b.setAttribute('aria-label', playing ? 'Pause opening narration' : 'Play opening narration');
-    });
-    buttons.forEach(b => b.addEventListener('click', () => { if (audio.paused) audio.play().catch(() => {}); else audio.pause(); }));
-    audio.addEventListener('play', () => set(true));
-    audio.addEventListener('pause', () => set(false));
-    audio.addEventListener('timeupdate', () => { if (Number.isFinite(audio.duration)) subtitle.textContent = line.slice(0, Math.ceil(line.length * Math.min(1, audio.currentTime / audio.duration))); });
-    audio.addEventListener('ended', () => { subtitle.textContent = line; set(false); });
-  }
+  const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const $ = <T extends HTMLElement>(s: string, r: ParentNode = document) => r.querySelector<T>(s);
+  const $$ = <T extends HTMLElement>(s: string, r: ParentNode = document) => [...r.querySelectorAll<T>(s)];
+  const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
-  // Red yarn: one thread through the pins, in play order. Drawn from the real pin positions so it fits every width.
-  const board = document.querySelector<HTMLElement>('#board');
-  const path = document.querySelector<SVGPathElement>('#yarn-path');
-  const pinsG = document.querySelector<SVGGElement>('#yarn-pins');
-  const svg = path?.ownerSVGElement;
-  const drawYarn = () => {
-    if (!board || !path || !pinsG || !svg) return;
-    const b = board.getBoundingClientRect();
-    const pts = [...board.querySelectorAll<HTMLElement>('[data-pin]')].map(p => { const r = p.getBoundingClientRect(); return [r.left + r.width / 2 - b.left - board.clientLeft, r.top + r.height / 2 - b.top - board.clientTop]; });
-    svg.setAttribute('viewBox', `0 0 ${board.clientWidth} ${board.clientHeight}`);
-    let d = `M${pts[0][0]} ${pts[0][1]}`;
-    for (let i = 1; i < pts.length; i++) {
-      const [ax, ay] = pts[i - 1], [bx, by] = pts[i], dy = by - ay;
-      if (Math.abs(dy) < 24) d += ` Q${(ax + bx) / 2} ${Math.max(ay, by) + 28} ${bx} ${by}`;
-      else if (Math.abs(bx - ax) > 24) d += ` C${ax} ${ay + dy * 0.55} ${bx} ${by - dy * 0.55} ${bx} ${by}`;
-      else { const bow = (i % 2 ? 1 : -1) * 12; d += ` C${ax + bow} ${ay + dy * 0.35} ${bx - bow} ${ay + dy * 0.65} ${bx} ${by}`; }
-    }
-    path.setAttribute('d', d);
-    pinsG.innerHTML = pts.map(([x, y]) => `<circle cx="${x}" cy="${y}" r="6"/>`).join('');
+  // PEEPS readout: types the baby talk in, once.
+  const typeIn = async (el: HTMLElement) => {
+    if (el.classList.contains("on")) return;
+    const text = el.dataset.text || el.textContent || "";
+    el.classList.add("on");
+    if (reduce) { el.textContent = text; return; }
+    el.classList.add("typing");
+    for (let i = 1; i <= text.length; i++) { el.textContent = text.slice(0, i); await sleep(24); }
+    el.classList.remove("typing");
   };
-  if (board) { drawYarn(); new ResizeObserver(drawYarn).observe(board); document.fonts?.ready.then(drawYarn); }
+
+  // ---- 1. Opening: audio plus typed subtitles in sync with the voice (phrase times measured from the file)
+  const audio = $<HTMLAudioElement>("#opening-audio")!;
+  const btn = $<HTMLButtonElement>("#play")!;
+  const label = $("#play-label")!;
+  const subs = $("#subs")!;
+  const phrases: [string, number, number][] = [
+    ["This city never sleeps.", 0, 1.57],
+    ["It just lies there in the dark with its eyes open,", 2.16, 4.9],
+    ["counting what you owe it.", 5.55, 6.72],
+  ];
+  const full = phrases.map((p) => p[0]).join(" ");
+  let raf = 0;
+  const draw = () => {
+    const t = audio.currentTime;
+    let out = "";
+    for (const [text, a, b] of phrases) {
+      if (t >= b) out += (out ? " " : "") + text;
+      else if (t > a) { const f = Math.min(1, (t - a) / (b - a)); out += (out ? " " : "") + text.slice(0, Math.max(1, Math.ceil(text.length * f))); break; }
+      else break;
+    }
+    subs.textContent = out;
+    if (!audio.paused && !audio.ended) raf = requestAnimationFrame(draw);
+  };
+  const state = (playing: boolean) => {
+    btn.dataset.state = playing ? "playing" : "paused";
+    btn.setAttribute("aria-pressed", String(playing));
+    label.textContent = playing ? "Pause Kip's opening" : "Play Kip's opening";
+  };
+  btn.addEventListener("click", () => {
+    if (audio.paused) { if (audio.ended || audio.currentTime >= 6.7) audio.currentTime = 0; audio.play().catch(() => {}); } else audio.pause();
+  });
+  audio.addEventListener("play", () => { state(true); cancelAnimationFrame(raf); raf = requestAnimationFrame(draw); });
+  audio.addEventListener("pause", () => state(false));
+  audio.addEventListener("ended", () => { state(false); subs.textContent = full; });
+
+  // ---- The scan: sweeps once when its element scrolls in, then the readout types
+  const run = async (el: HTMLElement) => {
+    const out = el.dataset.scan ? document.getElementById(el.dataset.scan) : null;
+    if (el.hasAttribute("data-stamp")) el.closest("section")?.classList.add("in");
+    if (!reduce) { el.classList.add("is-scanning"); await sleep(1050); }
+    if (out) typeIn(out);
+  };
+  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { io.unobserve(e.target); run(e.target as HTMLElement); } }), { threshold: 0.2 });
+  $$("[data-scan]").forEach((el) => io.observe(el));
+
+  // ---- 3. Search everything
+  const found = new Set<string>();
+  const caps = $$("[data-cap]");
+  const ticks = $$("#search .ticks i");
+  $$("[data-spot]").forEach((b) => b.addEventListener("click", () => {
+    const id = b.dataset.spot!;
+    found.add(id);
+    b.setAttribute("aria-pressed", "true");
+    caps.forEach((c) => c.classList.toggle("on", c.dataset.cap === id));
+    $("#counter-n")!.textContent = String(found.size);
+    ticks.forEach((t, i) => t.classList.toggle("on", i < found.size));
+  }));
+
+  // ---- 4. Talk: one line per tap, speakers alternate
+  const vn = $("#vn")!;
+  const lines = $$("#vn .vn__script li").map((li) => {
+    const name = li.querySelector("b")!.textContent!;
+    const text = li.textContent!.slice(name.length);
+    return { who: name === "Kip" ? "kip" : name === "PEEPS" ? "peeps" : "granny", name, text, shout: text === "THREE. MONTHS." };
+  });
+  const figs = Object.fromEntries($$("[data-fig]", vn).map((f) => [f.dataset.fig!, f]));
+  const box = $("#vn-box")!, lineEl = $("#vn-line")!, nameEl = $("#vn-name")!, stepEl = $("#vn-step")!, nextBtn = $<HTMLButtonElement>("#vn-next")!, nextL = $("#vn-next-l")!;
+  let at = -1;
+  let typing = 0;
+  const say = async (i: number) => {
+    const l = lines[i];
+    at = i;
+    vn.classList.toggle("is-shout", l.shout);
+    nameEl.textContent = l.name;
+    lineEl.className = "vn__line" + (l.who === "kip" ? " kip" : "") + (l.shout ? " shout" : "");
+    stepEl.textContent = `${i + 1} / ${lines.length}`;
+    nextL.textContent = i === lines.length - 1 ? "Show a clue" : "Next";
+    nextBtn.classList.toggle("vn__next--clue", i === lines.length - 1);
+    box.classList.remove("tick"); void box.offsetWidth; box.classList.add("tick");
+    figs.kip.classList.toggle("speaking", l.who === "kip");
+    figs.granny.hidden = l.who === "peeps";
+    figs.peeps.hidden = l.who !== "peeps";
+    figs.granny.classList.toggle("speaking", l.who === "granny");
+    figs.peeps.classList.toggle("speaking", l.who === "peeps");
+    const my = ++typing;
+    if (reduce) { lineEl.textContent = l.text; return; }
+    lineEl.textContent = "";
+    for (let k = 1; k <= l.text.length; k++) { if (my !== typing) return; lineEl.textContent = l.text.slice(0, k); await sleep(l.shout ? 70 : 16); }
+  };
+  const advance = () => {
+    if (vn.classList.contains("is-end")) return;
+    if (at >= 0 && lineEl.textContent !== lines[at].text) { typing++; lineEl.textContent = lines[at].text; return; } // first tap completes the line
+    if (at >= lines.length - 1) { vn.classList.add("is-end"); return; }
+    say(at + 1);
+  };
+  vn.classList.add("vn--live");
+  vn.addEventListener("click", (e) => { if (!(e.target as HTMLElement).closest("button, .vn__end")) advance(); });
+  nextBtn.addEventListener("click", advance);
+  $("#vn-replay")!.addEventListener("click", () => { vn.classList.remove("is-end"); say(0); });
+  const vio = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { vio.disconnect(); say(0); } }), { threshold: 0.4 });
+  vio.observe(vn);
+
+  // ---- 5. Office: tap a person, PEEPS scans them
+  const cards = $$("#card [data-card]");
+  const whoBtns = $$("[data-who]");
+  whoBtns.forEach((b) => b.addEventListener("click", async () => {
+    const id = b.dataset.who!;
+    whoBtns.forEach((o) => { o.setAttribute("aria-pressed", String(o === b)); if (o !== b) o.classList.remove("is-scanning"); });
+    cards.forEach((c) => { c.classList.toggle("on", c.dataset.card === id); const r = $<HTMLElement>(".readout", c); if (r) { r.classList.remove("on", "typing"); r.textContent = ""; } });
+    if (!reduce) { b.classList.remove("is-scanning"); void b.offsetWidth; b.classList.add("is-scanning"); await sleep(900); }
+    const r = $<HTMLElement>(`[data-card="${id}"] .readout`);
+    if (r) typeIn(r);
+  }));
+  // Phone: the room pans sideways, start on Kip
+  const pan = $("#pan")!;
+  if (innerWidth < 896) { const k = $("[data-who=kip]")!; pan.scrollLeft = k.offsetLeft + k.offsetWidth / 2 - pan.clientWidth / 2; }
 </script>
