@@ -140,6 +140,7 @@ const languages = ["English", "Spanish", "French", "German", "Dutch", "Korean", 
           <p>Tap anything in a room. Most things are a joke. Some are the clue. Here is Kip's desk, with five things to try.</p>
         </div>
       </div>
+      <div class="search__stage">
       <div class="room" id="room">
         <Picture src={officeA} formats={["avif", "webp"]} fallbackFormat="webp" widths={[640, 960, 1280]} sizes="(min-width: 75rem) 1200px, 100vw" alt="Kip's office at night: a corkboard, a desk lamp, a leather chair by a rainy window, a phone, and a cat asleep on a filing cabinet" loading="lazy" />
         {spots.map((s) => <button class="spot" type="button" data-spot={s.id} aria-pressed="false" aria-label={`Search: ${s.name}`} style={`left:${pct(s.r[0], 1280)};top:${pct(s.r[1], 720)};width:${pct(s.r[2], 1280)};height:${pct(s.r[3], 720)}`}></button>)}
@@ -158,6 +159,7 @@ const languages = ["English", "Spanish", "French", "German", "Dutch", "Korean", 
             </div>
           ))}
         </div>
+      </div>
       </div>
     </div>
   </section>
@@ -353,6 +355,9 @@ const languages = ["English", "Spanish", "French", "German", "Dutch", "Korean", 
     found.add(id);
     b.setAttribute("aria-pressed", "true");
     caps.forEach((c) => c.classList.toggle("on", c.dataset.cap === id));
+    $$("[data-spot]").forEach((o) => o.classList.toggle("is-current", o === b));
+    const cap = $("#cap")!; const r = cap.getBoundingClientRect();
+    if (r.bottom > innerHeight || r.top < 0) cap.scrollIntoView({ block: "nearest", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
     $("#counter-n")!.textContent = String(found.size);
     ticks.forEach((t, i) => t.classList.toggle("on", i < found.size));
   }));
